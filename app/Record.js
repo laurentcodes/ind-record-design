@@ -1,11 +1,5 @@
-import {
-	StyleSheet,
-	Text,
-	View,
-	SafeAreaView,
-	Pressable,
-	ScrollView,
-} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
+
 import { Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -63,7 +57,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	container: {
-		flex: 1,
+		flexGrow: 1,
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		paddingHorizontal: 20,
