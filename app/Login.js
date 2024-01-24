@@ -1,14 +1,84 @@
+import { useState, useEffect } from 'react';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 import AppleLogo from '../assets/icons/apple.svg';
 import GoogleLogo from '../assets/icons/google.svg';
 
 const Login = ({ navigation }) => {
+	let initialUser;
+
+	const [error, setError] = useState(null);
+	const [user, setUser] = useState(initialUser || null);
+
+	useEffect(() => {
+		const getInitialUser = async () => {
+			initialUser = {
+				name: await AsyncStorage.getItem('user-name'),
+				token: await AsyncStorage.getItem('user-id'),
+			};
+
+			setUser(initialUser);
+		};
+
+		getInitialUser();
+	}, []);
+
+	useEffect(() => {
+		GoogleSignin.configure({
+			webClientId:
+				'317492924256-vetl49aja2vspscsqsh1eh3u1o3hprh0.apps.googleusercontent.com',
+		});
+	}, []);
+
+	// const getFromStorage = async () => {
+	// 	const userData = await AsyncStorage.getItem('user');
+
+	// 	// setUser(userDataParsed);
+	// 	return userData;
+
+	// 	// console.log(userData, 'storage');
+	// };
+
+	const signIn = async () => {
+		try {
+			await GoogleSignin.hasPlayServices();
+
+			const userInfo = await GoogleSignin.signIn();
+
+			await AsyncStorage.setItem('user-name', userInfo.user.name);
+			await AsyncStorage.setItem('user-id', userInfo.user.id);
+
+			setUser({
+				name: userInfo.user.name,
+				token: userInfo.idToken,
+			});
+		} catch (error) {
+			console.log(error);
+
+			setError(error);
+		}
+	};
+
+	const logout = async () => {
+		setUser(null);
+		await AsyncStorage.clear();
+
+		GoogleSignin.revokeAccess();
+		GoogleSignin.signOut();
+	};
+
+	if (user && user?.token !== null) {
+		navigation.navigate('Records', { user });
+	}
+
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity
 				style={[styles.authButton, styles.shadowProp]}
-				onPress={() => navigation.navigate('Record')}
+				onPress={signIn}
 			>
 				<GoogleLogo width={30} height={30} />
 				<Text style={styles.authButtonText}>Google Auth</Text>
@@ -16,7 +86,7 @@ const Login = ({ navigation }) => {
 
 			<TouchableOpacity
 				style={[styles.authButton, styles.shadowProp]}
-				onPress={() => navigation.navigate('Record')}
+				onPress={logout}
 			>
 				<AppleLogo width={30} height={30} />
 				<Text style={styles.authButtonText}>Apple Auth</Text>

@@ -11,7 +11,9 @@ import Speaker from '../components/records/speaker';
 import ProgressView from '../components/records/progressView';
 import Description from '../components/records/description';
 
-const Record = () => {
+const Record = ({ route, navigation }) => {
+	const { user } = route.params;
+
 	return (
 		<LinearGradient
 			colors={['#010719', 'skyblue', '#010719']}
@@ -22,7 +24,7 @@ const Record = () => {
 				<ScrollView contentContainerStyle={styles.container}>
 					<View style={styles.appBar}>
 						<SettingsIcon width={25} height={25} />
-						<Text style={styles.text}>Hi, Michael 👋</Text>
+						<Text style={styles.text}>Hi, {user.name} 👋</Text>
 						<Text style={styles.text}></Text>
 					</View>
 

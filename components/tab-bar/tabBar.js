@@ -1,8 +1,7 @@
 import { View, Pressable, StyleSheet, Text } from 'react-native';
 
-import MicIcon from '../../assets/icons/mic.svg';
-
 import NavigationIcon from './navigationIcon';
+import Recording from './recording';
 
 const TabBar = ({ state, descriptors, navigation }) => {
 	return (
@@ -31,16 +30,7 @@ const TabBar = ({ state, descriptors, navigation }) => {
 				};
 
 				if (route.name == 'PlaceholderScreen') {
-					return (
-						<Pressable onPress={() => console.log('press xs')}>
-							<View
-								key={index}
-								style={[styles.mainItemContainer, styles.recordingButton]}
-							>
-								<MicIcon width={100} height={100} />
-							</View>
-						</Pressable>
-					);
+					return <Recording key={index} route={route} index={index} />;
 				}
 
 				return (
